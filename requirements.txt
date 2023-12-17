@@ -1,6 +1,5 @@
-torch
-keras_preprocessing
-PyYAML
+pytorch==1.0
+PyYAML>=5.1
 pandas
 scikit-learn
 numpy

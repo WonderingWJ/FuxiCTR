@@ -1,9 +1,10 @@
-from .pooling import *
-from .embeddings import *
-from .activations import *
-from .blocks import *
-from .interactions import *
-from .attentions import *
-
+from .embedding import *
+from .activation import *
+from .shallow import *
+from .deep import *
+from .sequence import *
+from .attention import *
+from .interaction import *
+from .graph import *
 
 

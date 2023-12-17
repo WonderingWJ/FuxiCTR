@@ -1,5 +1,5 @@
 # =========================================================================
-# Copyright (C) 2022. Huawei Technologies Co., Ltd. All rights reserved.
+# Copyright (C) 2021. Huawei Technologies Co., Ltd. All rights reserved.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,9 +16,12 @@
 
 
 import pandas as pd
-from fuxictr.preprocess import FeatureProcessor as BaseFeatureProcessor
+import numpy as np
+import os
+from ..features import FeatureEncoder as BaseFeatureEncoder
+from datetime import datetime, date
 
-class FeatureProcessor(BaseFeatureProcessor):
+class FeatureEncoder(BaseFeatureEncoder):
     def extract_country_code(self, df, col_name):
         return df[col_name].apply(lambda isrc: isrc[0:2] if not pd.isnull(isrc) else "")
 
