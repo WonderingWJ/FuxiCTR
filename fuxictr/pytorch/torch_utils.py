@@ -39,6 +39,7 @@ def get_device(gpu=-1):
     return device
 
 def get_optimizer(optimizer, params, lr):
+    # Add more types of optimizer here 
     if isinstance(optimizer, str):
         if optimizer.lower() == "adam":
             optimizer = "Adam"

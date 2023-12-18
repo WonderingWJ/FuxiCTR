@@ -81,32 +81,35 @@ class DLRM(BaseModel):
         self.compile(kwargs["optimizer"], loss=kwargs["loss"], lr=learning_rate)
         self.reset_parameters()
         self.model_to_device()
+        # This coding block is to print the modules and the initialized params
         #print("Weight initialization done!")
         #for idx, m in enumerate(self.named_modules()):
         #    print(idx,"---->",m)
-        for name, param in self.named_parameters():
-            torch.set_printoptions( edgeitems= 26)
-            logging.info(f"{name}, {param.size()} , {param}")
+        #for name, param in self.named_parameters():
+        #    torch.set_printoptions( edgeitems= 26)
+        #    logging.info(f"{name}, {param.size()} , {param}")
             
     def forward(self, inputs):
         """
         Inputs: [X,y]
         """
+
+        #logging in this block is to print the output of each module
         X, y = self.inputs_to_device(inputs)
         feat_emb = self.embedding_layer(X)
-        logging.info(f"feat_emb, {feat_emb}")
+        #logging.info(f"feat_emb, {feat_emb}")
         if len(self.dense_feats) > 0:
             feature_indexes = [self.feature_map.feature_specs[f]["index"] for f in self.dense_feats]
             dense_x = torch.cat([X[:, idx].float().view(-1, 1) for idx in feature_indexes], dim=-1)
             dense_emb = self.bottom_mlp(dense_x)
-            logging.info(f"dense_emb, {dense_emb}")
+            #logging.info(f"dense_emb, {dense_emb}")
             feat_emb = torch.cat([feat_emb, dense_emb.unsqueeze(1)], dim=1)
         if self.interaction_op == "dot":
             interact_out = self.interact(feat_emb)
         else:
             interact_out = feat_emb.flatten(start_dim=1)
         if self.interaction_op == "dot" and len(self.dense_feats) > 0:
-            logging.info(f"interaction_out, {interact_out}")
+            #logging.info(f"interaction_out, {interact_out}")
             interact_out = torch.cat([interact_out, dense_emb], dim=-1)
         y_pred = self.top_mlp(interact_out)
         return_dict = {"y_true": y, "y_pred": y_pred}

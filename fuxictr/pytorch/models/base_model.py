@@ -69,7 +69,8 @@ class BaseModel(nn.Module):
     def add_loss(self, inputs, reduction="mean"):
         return_dict = self.forward(inputs)
         loss = self.loss_fn(return_dict["y_pred"], return_dict["y_true"], reduction=reduction)
-        logging.info(f"y_pred: {return_dict['y_pred']}, y_true: {return_dict['y_true']}")
+        #logging to print the pred value VS true value and loss
+        #logging.info(f"y_pred: {return_dict['y_pred']}, y_true: {return_dict['y_true']}")
         #logging.info(f"loss: {loss}")
         return loss
 
@@ -96,6 +97,8 @@ class BaseModel(nn.Module):
         return total_loss
 
     def reset_parameters(self):
+
+        # To eliminate the affect of initialization, fix the seed for initialization
         def reset_param(m):
             if type(m) == nn.ModuleDict:
                 for k, v in m.items():
@@ -213,14 +216,15 @@ class BaseModel(nn.Module):
             loss = self.get_total_loss(batch_data)
             logging.info(f"{batch_index:}, loss: {loss}")
             loss.backward()
-            for p_index, p in enumerate(self.parameters()):
-                logging.info(f"{p_index} grad_size: {p.grad.size()}  grad: {p.grad}")
+            # To print the gradients 
+            #for p_index, p in enumerate(self.parameters()):
+            #    logging.info(f"{p_index} grad_size: {p.grad.size()}  grad: {p.grad}")
+            # Comment out the clip_grad_norm_ to keep consistent with our own PS implementation
             #nn.utils.clip_grad_norm_(self.parameters(), self._max_gradient_norm)
             self.optimizer.step()
             for p_index, p in enumerate(self.parameters()):
                 logging.info(f"After update {p_index} param_size: {p.size()}  param: {p}")
             epoch_loss += loss.item()
-            time.sleep(60)
             self.on_batch_end(batch_index)
             if self._stop_training:
                 break

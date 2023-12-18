@@ -39,6 +39,8 @@ class InnerProductLayer(nn.Module):
             self.interaction_units = int(num_fields * (num_fields - 1) / 2)
             #self.upper_triange_mask = nn.Parameter(torch.triu(torch.ones(num_fields, num_fields), 1)..type(torch.BoolTensor),
             #                                       requires_grad=False)
+
+            #register buffer for constant tensors (no need to do bprop)
             self.register_buffer("upper_triange_mask_buffer",torch.triu(torch.ones(num_fields, num_fields), 1).type(torch.BoolTensor))
 
     def forward(self, feature_emb):
